@@ -25,6 +25,13 @@ export function add(title: string): Task {
   return task;
 }
 
+export function rename(id: number, title: string): Task | null {
+  const task = find(id);
+  if (!task) return null;
+  task.title = title;
+  return task;
+}
+
 export function toggle(id: number): Task | null {
   const task = find(id);
   if (!task) return null;
