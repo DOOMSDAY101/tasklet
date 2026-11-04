@@ -8,19 +8,29 @@ interface Task {
   done: boolean;
 }
 
+type StatusFilter = "all" | "open" | "done";
+
+const FILTERS: { label: string; value: StatusFilter }[] = [
+  { label: "All", value: "all" },
+  { label: "Open", value: "open" },
+  { label: "Done", value: "done" },
+];
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<StatusFilter>("all");
 
-  async function load() {
-    const res = await fetch("/api/tasks");
+  async function load(filter: StatusFilter = status) {
+    const query = filter === "all" ? "" : `?status=${filter}`;
+    const res = await fetch(`/api/tasks${query}`);
     setTasks((await res.json()) as Task[]);
   }
 
   useEffect(() => {
-    load();
-  }, []);
+    load(status);
+  }, [status]);
 
   async function addTask(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,8 +77,31 @@ export default function Home() {
 
       {error && <p role="alert" style={{ color: "#b3261e" }}>{error}</p>}
 
+      <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+        {FILTERS.map((f) => (
+          <button
+            key={f.value}
+            onClick={() => setStatus(f.value)}
+            aria-pressed={status === f.value}
+            style={{
+              padding: "6px 14px",
+              fontSize: 14,
+              cursor: "pointer",
+              background: status === f.value ? "#1c1c1a" : "transparent",
+              color: status === f.value ? "#fff" : "#1c1c1a",
+              border: "1px solid #1c1c1a",
+              borderRadius: 999,
+            }}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       {tasks.length === 0 ? (
-        <p style={{ color: "#6b6b66" }}>No tasks yet. Add your first one above.</p>
+        <p style={{ color: "#6b6b66" }}>
+          {status === "all" ? "No tasks yet. Add your first one above." : `No ${status} tasks.`}
+        </p>
       ) : (
         <ul style={{ listStyle: "none", padding: 0, marginTop: 24 }}>
           {tasks.map((t) => (
