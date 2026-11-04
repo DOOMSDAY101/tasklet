@@ -20,6 +20,14 @@ export function createApp(): Express {
     res.status(201).json(task);
   });
 
+  app.patch("/tasks/:id", (req: Request, res: Response) => {
+    const title = typeof req.body.title === "string" ? req.body.title.trim() : "";
+    if (!title) return res.status(400).json({ error: "Title is required" });
+    const task = store.rename(Number(req.params.id), title);
+    if (!task) return res.status(404).json({ error: "Task not found" });
+    res.json(task);
+  });
+
   app.patch("/tasks/:id/toggle", (req: Request, res: Response) => {
     const task = store.toggle(Number(req.params.id));
     if (!task) return res.status(404).json({ error: "Task not found" });

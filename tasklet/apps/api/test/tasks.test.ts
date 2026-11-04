@@ -36,6 +36,33 @@ test("PATCH toggle on missing task returns 404", async () => {
   assert.strictEqual(res.status, 404);
 });
 
+test("PATCH /tasks/:id renames a task", async () => {
+  const created = await request(app).post("/tasks").send({ title: "Old title" });
+  const res = await request(app)
+    .patch(`/tasks/${created.body.id}`)
+    .send({ title: "New title" });
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(res.body.id, created.body.id);
+  assert.strictEqual(res.body.title, "New title");
+  assert.strictEqual(res.body.done, false);
+
+  const list = await request(app).get("/tasks");
+  assert.strictEqual(list.body[0].title, "New title");
+});
+
+test("PATCH /tasks/:id on missing task returns 404", async () => {
+  const res = await request(app).patch("/tasks/999").send({ title: "New title" });
+  assert.strictEqual(res.status, 404);
+});
+
+test("PATCH /tasks/:id rejects an empty title with 400", async () => {
+  const created = await request(app).post("/tasks").send({ title: "Old title" });
+  const res = await request(app)
+    .patch(`/tasks/${created.body.id}`)
+    .send({ title: "   " });
+  assert.strictEqual(res.status, 400);
+});
+
 test("GET /tasks?status=done returns only completed tasks", async () => {
   const open = await request(app).post("/tasks").send({ title: "Open task" });
   const done = await request(app).post("/tasks").send({ title: "Done task" });
