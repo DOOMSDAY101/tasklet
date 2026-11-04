@@ -9,8 +9,10 @@ export function createApp(): Express {
     res.json({ ok: true });
   });
 
-  app.get("/tasks", (_req: Request, res: Response) => {
-    res.json(store.all());
+  app.get("/tasks", (req: Request, res: Response) => {
+    const status = req.query.status;
+    const filter = status === "done" || status === "open" ? status : undefined;
+    res.json(store.all(filter));
   });
 
   app.post("/tasks", (req: Request, res: Response) => {

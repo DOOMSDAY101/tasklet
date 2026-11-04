@@ -9,7 +9,9 @@ export function reset(): void {
   nextId = 1;
 }
 
-export function all(): Task[] {
+export function all(status?: "done" | "open"): Task[] {
+  if (status === "done") return tasks.filter((t) => t.done);
+  if (status === "open") return tasks.filter((t) => !t.done);
   return tasks;
 }
 
