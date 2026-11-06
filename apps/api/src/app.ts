@@ -33,7 +33,9 @@ export function createApp(): Express {
   });
 
   app.post("/tasks", (req: Request, res: Response) => {
-    const task = store.add(req.body.title);
+    const title = typeof req.body.title === "string" ? req.body.title.trim() : "";
+    if (!title) return res.status(400).json({ error: "Title is required" });
+    const task = store.add(title);
     res.status(201).json(task);
   });
 
@@ -52,7 +54,9 @@ export function createApp(): Express {
   });
 
   app.delete("/tasks/:id", (req: Request, res: Response) => {
-    store.remove(Number(req.params.id));
+    if (!store.remove(Number(req.params.id))) {
+      return res.status(404).json({ error: "Task not found" });
+    }
     res.status(204).end();
   });
 
