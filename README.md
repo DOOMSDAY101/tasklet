@@ -4,7 +4,7 @@
 
 DevCrew is six AI agents working inside a shared Mattermost channel through [Switch](https://docs.switchagents.ai), alongside the developers. Each agent has one job and a hard boundary. One agent builds, a different agent independently verifies, and a human decides what ships.
 
-Built by **Two-Phase Commit** for the Flip the Switch hackathon (Track 1: Best Business Workflow).
+Built by **Team Dynamo** for the Flip the Switch hackathon (Track 1: Best Business Workflow).
 
 - Demo video: <DEMO_VIDEO_LINK>
 - Blog post: <BLOG_LINK>
@@ -156,9 +156,8 @@ npm run dev:web    # port 3000
 
 ## Team
 
-**Two-Phase Commit**: Sulaiman Ifeoluwa and Nwanze Justin
+**Team Dynamo**: Sulaiman Ifeoluwa and Nwanze Justin
 
 ## License
 
-MIT
-`LICENSE`
+**MIT** [`LICENSE`](LICENSE)
