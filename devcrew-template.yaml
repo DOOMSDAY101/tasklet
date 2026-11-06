@@ -36,6 +36,12 @@ params:
     label: Conductor's folder
     description: Conductor needs no repo, only an empty folder.
     default: "{$agents_dir}/conductor"
+  github_repo:
+    type: text
+    label: GitHub Repository link
+    required: true
+    description: The Repository for the GitHub the agents have access to
+    default: "https://github.com/DOOMSDAY101/tasklet.git"
 
 resources:
   forge:
@@ -45,7 +51,7 @@ resources:
     provider: opencode
     machine: "{machine}"
     directory: "{forge_dir}"
-    repo: https://github.com/DOOMSDAY101/tasklet.git
+    repo: "{github_repo}"
     auto_mode: true
     instructions: |
       You are Forge, the Builder on DevCrew. You work in the repo that is your working directory. Read AGENTS.md at the start of every task for the stack, layout, commands and conventions.
@@ -109,7 +115,7 @@ resources:
     provider: opencode
     machine: "{machine}"
     directory: "{sentinel_dir}"
-    repo: https://github.com/DOOMSDAY101/tasklet.git
+    repo: "{github_repo}"
     auto_mode: true
     instructions: |
       You are Sentinel, the Reviewer on DevCrew, an AI development team. You independently verify code that Forge writes in the repo that is your working directory. Read AGENTS.md for the stack and commands. You never trust Forge's report. You check everything yourself.
@@ -129,10 +135,10 @@ resources:
       SETUP (first run only)
       Your working directory IS the repo. Never create a subfolder for it and never clone inside an existing repo.
       Check whether this folder is itself the repo root: run `git rev-parse --show-toplevel`. If the command fails, or the path it prints is not exactly your working directory, say "Cloning the repo, one moment." then run:
-        git clone https://github.com/DOOMSDAY101/tasklet.git .
+        git clone "{github_repo}" .
       If that fails because the folder is not empty, run instead:
         git init
-        git remote add origin https://github.com/DOOMSDAY101/tasklet.git
+        git remote add origin "{github_repo}"
         git fetch origin --prune
         git checkout -f -B main origin/main
       Then run the install command from AGENTS.md. Say this once. Do not narrate later runs.
@@ -212,7 +218,7 @@ resources:
     provider: opencode
     machine: "{machine}"
     directory: "{scout_dir}"
-    repo: https://github.com/DOOMSDAY101/tasklet.git
+    repo: "{github_repo}"
     auto_mode: true
     instructions: |
       You are Scout, the Project Analyst on DevCrew, an AI development team. You find opportunities to make the repo that is your working directory better. You never change anything. Read AGENTS.md for the stack and commands.
@@ -260,7 +266,7 @@ resources:
     provider: opencode
     machine: "{machine}"
     directory: "{pulse_dir}"
-    repo: https://github.com/DOOMSDAY101/tasklet.git
+    repo: "{github_repo}"
     auto_mode: true
     instructions: |
       You are Pulse, the Team Reporter on DevCrew, an AI development team working on the repo that is your working directory. You keep everyone informed about what has already happened. You report; you never investigate or change anything.
@@ -307,7 +313,7 @@ resources:
     provider: opencode
     machine: "{machine}"
     directory: "{kudos_dir}"
-    repo: https://github.com/DOOMSDAY101/tasklet.git
+    repo: "{github_repo}"
     auto_mode: true
     instructions: |
       You are Kudos, the Team Appreciation Agent on DevCrew, an AI development team working on the repo that is your working directory. You make people feel appreciated by recognizing real contributions, from humans and agents alike. You never rank, score or compare people.
