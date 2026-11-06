@@ -1,6 +1,12 @@
 import express, { type Express, type Request, type Response } from "express";
 import * as store from "./store";
 
+function parsePageParam(value: unknown): number | undefined | null {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || !/^\d+$/.test(value)) return null;
+  return Number(value);
+}
+
 export function createApp(): Express {
   const app = express();
   app.use(express.json());
@@ -12,7 +18,17 @@ export function createApp(): Express {
   app.get("/tasks", (req: Request, res: Response) => {
     const status = req.query.status;
     const filter = status === "done" || status === "open" ? status : undefined;
-    res.json(store.all(filter));
+
+    const limit = parsePageParam(req.query.limit);
+    const offset = parsePageParam(req.query.offset);
+    if (limit === null || offset === null) {
+      return res.status(400).json({ error: "limit and offset must be non-negative integers" });
+    }
+
+    const tasks = store.all(filter);
+    const start = offset ?? 0;
+    const page = limit === undefined ? tasks.slice(start) : tasks.slice(start, start + limit);
+    res.json(page);
   });
 
   app.post("/tasks", (req: Request, res: Response) => {

@@ -102,6 +102,65 @@ test("GET /tasks without status returns all tasks", async () => {
   assert.strictEqual(res.body.length, 2);
 });
 
+test("GET /tasks?limit= returns at most limit tasks", async () => {
+  await request(app).post("/tasks").send({ title: "One" });
+  await request(app).post("/tasks").send({ title: "Two" });
+  await request(app).post("/tasks").send({ title: "Three" });
+
+  const res = await request(app).get("/tasks?limit=2");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(
+    res.body.map((t: { title: string }) => t.title),
+    ["One", "Two"],
+  );
+});
+
+test("GET /tasks?offset= skips tasks", async () => {
+  await request(app).post("/tasks").send({ title: "One" });
+  await request(app).post("/tasks").send({ title: "Two" });
+  await request(app).post("/tasks").send({ title: "Three" });
+
+  const res = await request(app).get("/tasks?offset=1");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(
+    res.body.map((t: { title: string }) => t.title),
+    ["Two", "Three"],
+  );
+});
+
+test("GET /tasks combines limit and offset with status filter", async () => {
+  const a = await request(app).post("/tasks").send({ title: "One" });
+  await request(app).post("/tasks").send({ title: "Two" });
+  await request(app).post("/tasks").send({ title: "Three" });
+  const done = await request(app).post("/tasks").send({ title: "Done" });
+  await request(app).patch(`/tasks/${done.body.id}/toggle`);
+
+  const res = await request(app).get("/tasks?status=open&limit=1&offset=1");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(
+    res.body.map((t: { id: number }) => t.id),
+    [a.body.id + 1],
+  );
+});
+
+test("GET /tasks with offset past the end returns an empty list", async () => {
+  await request(app).post("/tasks").send({ title: "One" });
+
+  const res = await request(app).get("/tasks?offset=10");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(res.body, []);
+});
+
+test("GET /tasks rejects a non-numeric limit with 400", async () => {
+  const res = await request(app).get("/tasks?limit=abc");
+  assert.strictEqual(res.status, 400);
+});
+
+test("GET /tasks rejects a negative offset with 400", async () => {
+  const res = await request(app).get("/tasks?offset=-1");
+  assert.strictEqual(res.status, 400);
+});
+
 // --- Seeded bugs: these two tests FAIL on purpose. Forge should fix the code. ---
 
 test("POST /tasks rejects an empty title with 400", async () => {
