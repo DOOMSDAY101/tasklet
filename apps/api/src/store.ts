@@ -39,6 +39,8 @@ export function toggle(id: number): Task | null {
   return task;
 }
 
-export function remove(id: number): void {
+export function remove(id: number): boolean {
+  const before = tasks.length;
   tasks = tasks.filter((t) => t.id !== id);
+  return tasks.length < before;
 }

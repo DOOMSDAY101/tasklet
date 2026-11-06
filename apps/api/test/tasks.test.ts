@@ -192,14 +192,31 @@ test("GET /tasks rejects a negative limit with 400", async () => {
   assert.strictEqual(res.status, 400);
 });
 
-// --- Seeded bugs: these two tests FAIL on purpose. Forge should fix the code. ---
+// --- Seeded bug regressions ---
 
 test("POST /tasks rejects an empty title with 400", async () => {
   const res = await request(app).post("/tasks").send({ title: "   " });
   assert.strictEqual(res.status, 400);
 });
 
+test("POST /tasks rejects a missing or non-string title with 400", async () => {
+  const missing = await request(app).post("/tasks").send({});
+  assert.strictEqual(missing.status, 400);
+
+  const wrongType = await request(app).post("/tasks").send({ title: 42 });
+  assert.strictEqual(wrongType.status, 400);
+});
+
 test("DELETE on a missing task returns 404", async () => {
   const res = await request(app).delete("/tasks/999");
   assert.strictEqual(res.status, 404);
+});
+
+test("DELETE /tasks/:id removes the task", async () => {
+  const created = await request(app).post("/tasks").send({ title: "Delete me" });
+  const res = await request(app).delete(`/tasks/${created.body.id}`);
+  assert.strictEqual(res.status, 204);
+
+  const list = await request(app).get("/tasks");
+  assert.strictEqual(list.body.length, 0);
 });
