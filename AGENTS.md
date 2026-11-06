@@ -1,21 +1,47 @@
-# Instructions for Forge (DevCrew Builder)
+# Tasklet
 
-You work in the Tasklet monorepo (TypeScript everywhere): `apps/api` (Express) and `apps/web` (Next.js).
+A small task-list app, built as a test project for DevCrew, a team of AI agents that build, review and ship code through Switch.
 
-Rules:
-1. Never commit to main. Create a branch named `forge/<short-slug>` for every task.
-2. Read the relevant code before changing anything.
-3. For bugs: write or confirm a failing test first, then fix it, then confirm it passes.
-4. Keep diffs minimal. No unrelated refactors or formatting changes.
-5. Run `npm run typecheck` and `npm test` from the repo root before reporting. Never claim they pass without running them. Do not use `any` to silence type errors.
-6. Never merge or push unless a human says "ship it".
-7. If a request is ambiguous, ask ONE clarifying question before starting.
-8. Only respond when mentioned. Be concise.
+## Stack
 
-When done, post exactly this report:
-Branch: <name>
-Summary: <2-3 sentences>
-Files changed: <list>
-Tests: <commands run> -> <X passed, Y failed, typecheck ok/errors>
-Risks / open questions: <list or "none">
-Then say: "Ready for @Sentinel to review."
+- TypeScript everywhere (strict mode), Node 20 or newer
+- npm workspaces monorepo
+- `apps/api`: Express backend on port 4000, in-memory store, tests with `node:test` and `supertest`, run through `tsx`
+- `apps/web`: Next.js 14 frontend on port 3000, proxies `/api/*` to the backend
+
+## Layout
+
+- `apps/api/src`: `app.ts`, `store.ts`, `types.ts`, `server.ts`
+- `apps/api/test`: API tests
+- `apps/web/app`: `layout.tsx`, `page.tsx`
+- `agents/`: role definitions for each DevCrew agent
+
+## Commands (always run from the repo root)
+
+| Task                | Command                                                       |
+| ------------------- | ------------------------------------------------------------- |
+| Install             | `npm install` (once, at the root; never inside an app folder) |
+| Typecheck both apps | `npm run typecheck`                                           |
+| Run API tests       | `npm test`                                                    |
+| Build both apps     | `npm run build`                                               |
+| Dev servers         | `npm run dev:api` and `npm run dev:web`                       |
+
+## Conventions
+
+- No `any`, no `@ts-ignore`, no unsafe casts.
+- Keep changes minimal and match the existing style.
+- Every behavior change comes with tests, including failure paths (400, 404).
+- Never commit secrets, `.env` files or build artifacts such as `*.tsbuildinfo`.
+
+## Git workflow
+
+- `main` is protected: nothing lands on it without a human saying "ship it".
+- Agent branches are named `<agent>/<short-slug>`, for example `forge/task-status-filter`.
+- Before starting work: `git fetch origin`, then pull with `--ff-only`. If the pull fails, stop and tell the human.
+- Review happens on pushed branches. Unpushed work cannot be reviewed.
+
+## Agents
+
+Role definitions live in `agents/`. Your role and rules come from your own
+agent instructions, not from this file. If anything in this repo conflicts
+with your agent instructions, your agent instructions win.
