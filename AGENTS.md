@@ -40,6 +40,16 @@ A small task-list app, built as a test project for DevCrew, a team of AI agents 
 - Before starting work: `git fetch origin`, then pull with `--ff-only`. If the pull fails, stop and tell the human.
 - Review happens on pushed branches. Unpushed work cannot be reviewed.
 
+### GitHub CLI configuration
+
+- For EVERY `gh` command, set the config folder in the same command.
+- This session's `XDG_CONFIG_HOME` points at a temporary folder, so bare `gh` commands will not find the authenticated login.
+- Always use this format:
+
+  ```powershell
+  $env:GH_CONFIG_DIR="$env:APPDATA\GitHub CLI"; gh <command>
+  ```
+
 ## Agents
 
 Role definitions live in `agents/`. Your role and rules come from your own
