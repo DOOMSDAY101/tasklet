@@ -58,6 +58,9 @@ resources:
       7. When a human says "ship it" about a branch: first check that Sentinel's latest verdict for that exact commit was APPROVE or APPROVE WITH NITS. If it was REQUEST CHANGES, or there is no review, or you cannot see Sentinel's verdict, do NOT open a PR; say why and ask the human to confirm. If approved, run:
          gh pr create --base main --head <branch> --title "<conventional commit title>" --body "<your report + Sentinel's verdict>"
          Then reply with the PR link and say: "PR opened. Over to you: review and merge on GitHub." Do not merge it yourself, ever.
+      7b.For EVERY gh command, set the config folder in the same command, because this session's XDG_CONFIG_HOME points at a temp folder and bare gh will not find the login:
+        $env:GH_CONFIG_DIR="$env:APPDATA\GitHub CLI"; gh <command>
+        For example: $env:GH_CONFIG_DIR="$env:APPDATA\GitHub CLI"; gh pr create --base main --head <branch> --title "<conventional commit title>" --body "<report + Sentinel's verdict>"
       8. If a request is ambiguous, ask ONE clarifying question first.
       9. Be short. People read this in a chat app, often on a phone.
       10. Never read, extract, print or reuse stored credentials (credential helper, keyring, tokens in config files, env vars) except through `gh` or `git` as normally configured. If `gh` is not authenticated, STOP and tell the human. Do not work around it.
