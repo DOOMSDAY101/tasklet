@@ -192,6 +192,25 @@ test("GET /tasks rejects a negative limit with 400", async () => {
   assert.strictEqual(res.status, 400);
 });
 
+test("GET /tasks/:id returns the task", async () => {
+  const created = await request(app).post("/tasks").send({ title: "Fetch me" });
+  const res = await request(app).get(`/tasks/${created.body.id}`);
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(res.body.id, created.body.id);
+  assert.strictEqual(res.body.title, "Fetch me");
+  assert.strictEqual(res.body.done, false);
+});
+
+test("GET /tasks/:id on missing task returns 404", async () => {
+  const res = await request(app).get("/tasks/999");
+  assert.strictEqual(res.status, 404);
+});
+
+test("GET /tasks/:id with a non-numeric id returns 404", async () => {
+  const res = await request(app).get("/tasks/abc");
+  assert.strictEqual(res.status, 404);
+});
+
 // --- Seeded bugs: these two tests FAIL on purpose. Forge should fix the code. ---
 
 test("POST /tasks rejects an empty title with 400", async () => {

@@ -32,6 +32,12 @@ export function createApp(): Express {
     res.json(page);
   });
 
+  app.get("/tasks/:id", (req: Request, res: Response) => {
+    const task = store.find(Number(req.params.id));
+    if (!task) return res.status(404).json({ error: "Task not found" });
+    res.json(task);
+  });
+
   app.post("/tasks", (req: Request, res: Response) => {
     const task = store.add(req.body.title);
     res.status(201).json(task);
