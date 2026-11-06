@@ -161,6 +161,37 @@ test("GET /tasks rejects a negative offset with 400", async () => {
   assert.strictEqual(res.status, 400);
 });
 
+test("GET /tasks with limit=0 returns an empty list", async () => {
+  await request(app).post("/tasks").send({ title: "One" });
+
+  const res = await request(app).get("/tasks?limit=0");
+  assert.strictEqual(res.status, 200);
+  assert.deepStrictEqual(res.body, []);
+});
+
+test("GET /tasks rejects an empty or whitespace limit with 400", async () => {
+  const empty = await request(app).get("/tasks?limit=");
+  assert.strictEqual(empty.status, 400);
+
+  const whitespace = await request(app).get("/tasks?limit=%20");
+  assert.strictEqual(whitespace.status, 400);
+});
+
+test("GET /tasks rejects a huge limit with 400", async () => {
+  const res = await request(app).get("/tasks?limit=999999999999999999999");
+  assert.strictEqual(res.status, 400);
+});
+
+test("GET /tasks rejects a non-numeric offset with 400", async () => {
+  const res = await request(app).get("/tasks?offset=abc");
+  assert.strictEqual(res.status, 400);
+});
+
+test("GET /tasks rejects a negative limit with 400", async () => {
+  const res = await request(app).get("/tasks?limit=-1");
+  assert.strictEqual(res.status, 400);
+});
+
 // --- Seeded bugs: these two tests FAIL on purpose. Forge should fix the code. ---
 
 test("POST /tasks rejects an empty title with 400", async () => {

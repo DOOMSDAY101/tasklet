@@ -4,7 +4,8 @@ import * as store from "./store";
 function parsePageParam(value: unknown): number | undefined | null {
   if (value === undefined) return undefined;
   if (typeof value !== "string" || !/^\d+$/.test(value)) return null;
-  return Number(value);
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) ? parsed : null;
 }
 
 export function createApp(): Express {
