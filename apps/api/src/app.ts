@@ -18,7 +18,10 @@ export function createApp(): Express {
 
   app.get("/tasks", (req: Request, res: Response) => {
     const status = req.query.status;
-    const filter = status === "done" || status === "open" ? status : undefined;
+    if (status !== undefined && status !== "done" && status !== "open") {
+      return res.status(400).json({ error: "status must be 'open' or 'done'" });
+    }
+    const filter = status;
 
     const limit = parsePageParam(req.query.limit);
     const offset = parsePageParam(req.query.offset);

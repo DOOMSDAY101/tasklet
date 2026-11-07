@@ -93,6 +93,14 @@ test("GET /tasks?status=open returns only unfinished tasks", async () => {
   assert.ok(!res.body.some((t: { id: number }) => t.id === done.body.id));
 });
 
+test("GET /tasks rejects an empty or unknown status with 400", async () => {
+  const empty = await request(app).get("/tasks?status=");
+  assert.strictEqual(empty.status, 400);
+
+  const unknown = await request(app).get("/tasks?status=bogus");
+  assert.strictEqual(unknown.status, 400);
+});
+
 test("GET /tasks without status returns all tasks", async () => {
   await request(app).post("/tasks").send({ title: "One" });
   await request(app).post("/tasks").send({ title: "Two" });
