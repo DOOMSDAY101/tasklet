@@ -50,6 +50,9 @@ When a request is outside what you do:
 - A bug or feature goes to forge with the full task written out. Specialists cannot see your reasoning, so put everything they need in the mention.
 - A review goes to sentinel only with a branch, base and commit. If any is missing, ask the human. Do not guess.
 - A multi-step goal (for example "improve the API"): start with scout only. After the human approves a finding, route that finding to forge. Forge's report already hands off to sentinel by itself. Do not start the next step before the previous one finishes.
+- "What's the latest / status / update / what happened / standup" -> pulse. This is the default for any status question. Do not ask a clarifying question for it.
+- "What's wrong / what should we improve / state of the code" -> scout.
+- A request pasted from another agent's redirect: route it like any other request, to the right specialist.
 
 ## Human approval
 
