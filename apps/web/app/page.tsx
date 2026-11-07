@@ -16,21 +16,30 @@ const FILTERS: { label: string; value: StatusFilter }[] = [
   { label: "Done", value: "done" },
 ];
 
+const PAGE_SIZE = 5;
+
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [page, setPage] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(false);
 
-  async function load(filter: StatusFilter = status) {
-    const query = filter === "all" ? "" : `?status=${filter}`;
-    const res = await fetch(`/api/tasks${query}`);
-    setTasks((await res.json()) as Task[]);
+  async function load(filter: StatusFilter = status, pageIndex: number = page) {
+    const params = new URLSearchParams();
+    if (filter !== "all") params.set("status", filter);
+    params.set("limit", String(PAGE_SIZE + 1));
+    params.set("offset", String(pageIndex * PAGE_SIZE));
+    const res = await fetch(`/api/tasks?${params.toString()}`);
+    const rows = (await res.json()) as Task[];
+    setHasNextPage(rows.length > PAGE_SIZE);
+    setTasks(rows.slice(0, PAGE_SIZE));
   }
 
   useEffect(() => {
-    load(status);
-  }, [status]);
+    load(status, page);
+  }, [status, page]);
 
   async function addTask(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -55,6 +64,10 @@ export default function Home() {
 
   async function remove(id: number) {
     await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+    if (tasks.length === 1 && page > 0) {
+      setPage(page - 1);
+      return;
+    }
     load();
   }
 
@@ -81,7 +94,10 @@ export default function Home() {
         {FILTERS.map((f) => (
           <button
             key={f.value}
-            onClick={() => setStatus(f.value)}
+            onClick={() => {
+              setStatus(f.value);
+              setPage(0);
+            }}
             aria-pressed={status === f.value}
             style={{
               padding: "6px 14px",
@@ -112,6 +128,40 @@ export default function Home() {
             </li>
           ))}
         </ul>
+      )}
+
+      {(tasks.length > 0 || page > 0) && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            marginTop: 24,
+          }}
+        >
+          <button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 0}
+            aria-label="Previous page"
+            style={{ padding: "6px 14px", fontSize: 14, cursor: page === 0 ? "default" : "pointer" }}
+          >
+            Previous
+          </button>
+          <span style={{ color: "#6b6b66", fontSize: 14 }}>Page {page + 1}</span>
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={!hasNextPage}
+            aria-label="Next page"
+            style={{
+              padding: "6px 14px",
+              fontSize: 14,
+              cursor: hasNextPage ? "pointer" : "default",
+            }}
+          >
+            Next
+          </button>
+        </div>
       )}
     </main>
   );
