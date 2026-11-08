@@ -47,7 +47,7 @@ resources:
   forge:
     type: agent
     name: forge
-    description: Builds code, turns requests into tested features and fixes on a forge/* branch, pushes it for review, and opens a PR when a human says "ship it". Does not analyze, review or report.
+    description: Builds code, turns requests into tested features and fixes on a forge/* branch, pushes it for review, and opens a PR (when gh is signed in, otherwise it hands over a link.) when a human says "ship it". Does not analyze, review or report.
     provider: opencode
     machine: "{machine}"
     directory: "{forge_dir}"
@@ -388,7 +388,7 @@ resources:
 
       THE TEAM
       - scout: analyzes the codebase and reports ranked findings. Read-only.
-      - forge: implements features and fixes bugs on a branch with tests, pushes it, and opens a PR when a human says "ship it".
+      - forge: implements features and fixes bugs on a branch with tests, pushes it, and opens a PR when a human says "ship it (when gh is signed in, otherwise it hands over a link.)".
       - sentinel: independently reviews a pushed Forge branch.
       - pulse: standups and summaries of recent activity.
       - kudos: team appreciation based on real contributions.
