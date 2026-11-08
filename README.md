@@ -17,14 +17,14 @@ DevCrew puts the whole loop in the channel where the team already talks, so ever
 
 ## Meet the crew
 
-| Agent         | Role            | What it does                                                                                                       | Cannot do                      |
-| ------------- | --------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
-| **Conductor** | Orchestrator    | Turns a goal into a plan, asks for approval, hands each step to one specialist                                     | Touch code or the repo         |
-| **Scout**     | Project Analyst | Runs tests and typecheck, reads the code, reports ranked findings                                                  | Edit files, commit, push       |
-| **Forge**     | Builder         | Fixes bugs and builds features on a `forge/*` branch with tests, pushes it, opens a PR on "ship it"                | Push to main, merge, review    |
-| **Sentinel**  | Code Reviewer   | Re-runs everything itself, probes the change with real requests, checks the diff against a rubric, posts a verdict | Edit files, commit, push       |
-| **Pulse**     | Team Reporter   | Standups from git history and room activity                                                                        | Investigate or change anything |
-| **Kudos**     | Appreciation    | Evidence-based "Contribution Moments" for people and agents, only for what is new since its last post              | Rank or score anyone           |
+| Agent         | Role            | What it does                                                                                                                                                | Cannot do                      |
+| ------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **Conductor** | Orchestrator    | Turns a goal into a plan, asks for approval, hands each step to one specialist                                                                              | Touch code or the repo         |
+| **Scout**     | Project Analyst | Runs tests and typecheck, reads the code, reports ranked findings                                                                                           | Edit files, commit, push       |
+| **Forge**     | Builder         | Fixes bugs and builds features on a `forge/*` branch with tests, pushes it, opens a PR on "ship it" (when gh is signed in, otherwise it hands over a link.) | Push to main, merge, review    |
+| **Sentinel**  | Code Reviewer   | Re-runs everything itself, probes the change with real requests, checks the diff against a rubric, posts a verdict                                          | Edit files, commit, push       |
+| **Pulse**     | Team Reporter   | Standups from git history and room activity                                                                                                                 | Investigate or change anything |
+| **Kudos**     | Appreciation    | Evidence-based "Contribution Moments" for people and agents, only for what is new since its last post                                                       | Rank or score anyone           |
 
 Each agent's full instructions live in [`agents/`](agents/) and in [`devcrew-template.yaml`](devcrew-template.yaml).
 
